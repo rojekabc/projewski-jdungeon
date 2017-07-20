@@ -5,15 +5,16 @@ import pl.projewski.jdungeon.map.MapElement;
 
 public class DumpHelper {
 
-	public static void dumpMap(GeneratedMap map, String description) {
+	public static void dumpMap(final GeneratedMap map, final String description) {
 		if (description != null) {
 			System.out.println(description);
 		}
-		char[] valueMapping = new char[MapElement.values().length];
+		final char[] valueMapping = new char[MapElement.values().length];
 		valueMapping[MapElement.NOT_GENERATED.getMapValue()] = '#';
 		valueMapping[MapElement.PATH.getMapValue()] = '.';
 		valueMapping[MapElement.ROOM.getMapValue()] = '.';
 		valueMapping[MapElement.WALL.getMapValue()] = '#';
+		valueMapping[MapElement.DOOR.getMapValue()] = '+';
 
 		final char[][] charMap = map.convertToCharMap(valueMapping);
 		final int height = map.getHeight();
@@ -27,15 +28,15 @@ public class DumpHelper {
 
 	}
 
-	public static void dumpMap(GeneratedMap map) {
+	public static void dumpMap(final GeneratedMap map) {
 		dumpMap(map, null);
 	}
 
-	public static void dumpMapValues(GeneratedMap map) {
-		int width = map.getWidth();
+	public static void dumpMapValues(final GeneratedMap map) {
+		final int width = map.getWidth();
 		for (int j = 0; j < map.getHeight(); j++) {
 			for (int i = 0; i < width; i++) {
-				byte b = map.getValue(j * width + i);
+				final byte b = map.getValue(j * width + i);
 				if (b < 0x10) {
 					System.out.print('0');
 					System.out.print(Integer.toHexString(b & 0xFF));

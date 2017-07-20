@@ -1,27 +1,96 @@
 package pl.projewski.jdungeon.map.direct;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * Direct access class for rectangle. It implements {@link Cloneable} and
+ * {@link Moveable} interfaces.
+ * 
+ * @author Piotr Rojewski <rojek_abc@o2.pl>
+ *
+ */
 @AllArgsConstructor
 @ToString
-public class Area2D implements Cloneable {
+@EqualsAndHashCode
+public class Area2D implements Cloneable, Moveable<Area2D> {
+	/** The x coordinate. */
 	public int x;
+	/** The y coordinate. */
 	public int y;
+	/** The width. */
 	public int width;
+	/** The height. */
 	public int height;
 
-	public void move(Vector2D v) {
+	@Override
+	public void move(final Vector2D v) {
 		x += v.dx;
 		y += v.dy;
 	}
 
-	public boolean isInside(int x, int y, int wdth, int height) {
+	/**
+	 * Get common rectangle area.
+	 * 
+	 * @param area
+	 *            the area
+	 * @return the common area or null, if not found
+	 */
+	public Area2D getCommonArea(final Area2D area) {
+		final int xLeft = Math.max(this.x, area.x);
+		final int xRight = Math.min(this.x + this.width, area.x + area.width);
+		if (xRight <= xLeft) {
+			return null;
+		}
+		final int yTop = Math.max(this.y, area.y);
+		final int yBottom = Math.min(this.y + this.height, area.y + area.height);
+		if (yBottom <= yTop) {
+			return null;
+		}
+		return new Area2D(xLeft, yTop, xRight - xLeft, yBottom - yTop);
+	}
+
+	/**
+	 * Check, that this area is inside another rectangle area.
+	 * 
+	 * @param x
+	 *            the rectangle area's x coordinate
+	 * @param y
+	 *            the rectangle area's y coordinate
+	 * @param wdth
+	 *            the rectangle area's width
+	 * @param height
+	 *            the rectangle area's height
+	 * @return true, if the this whole area is inside of area from parameters
+	 */
+	public boolean isInside(final int x, final int y, final int wdth, final int height) {
 		return this.x >= x && this.y >= y && this.x + this.width <= width && this.y + this.height <= height;
 	}
 
-	public boolean isInside(Area2D area) {
+	/**
+	 * Check, that this area is inside another rectangle area.
+	 * 
+	 * @param area
+	 *            the rectangle area
+	 * @return true, if the this whole area is inside of area from parameter
+	 */
+	public boolean isInside(final Area2D area) {
 		return isInside(area.x, area.y, area.width, area.height);
+	}
+
+	/**
+	 * Get a center point. It's calculated in integer values !
+	 * 
+	 * @return the center point of this area
+	 */
+	public Point2D center() {
+		return new Point2D(this.x + this.width / 2, this.y + this.height / 2);
+	}
+
+	@Override
+	public Vector2D vectorTo(final Area2D area) {
+		return center().vectorTo(area.center());
 	}
 
 	@Override

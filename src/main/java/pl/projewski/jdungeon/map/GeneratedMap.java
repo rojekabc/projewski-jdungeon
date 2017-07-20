@@ -14,15 +14,17 @@ import pl.projewski.jdungeon.map.direct.Point2D;
  *
  */
 @Slf4j
-public class GeneratedMap {
+public class GeneratedMap implements Cloneable {
 	/**
 	 * Container of map data.
 	 */
 	byte[] map;
+	/** The width of the mp. */
 	@Getter
-	private int width;
+	private final int width;
+	/** The height of the map. */
 	@Getter
-	private int height;
+	private final int height;
 
 	/**
 	 * Create map data for specified size and fill it by
@@ -35,7 +37,7 @@ public class GeneratedMap {
 	 * @exception IllegalArgumentException
 	 *                if width or height are less or euals zero
 	 */
-	public GeneratedMap(int width, int height) {
+	public GeneratedMap(final int width, final int height) {
 		if (width <= 0) {
 			throw new IllegalArgumentException("width");
 		}
@@ -54,7 +56,7 @@ public class GeneratedMap {
 	 * @param element
 	 *            the element to fill the map
 	 */
-	void fill(MapElement element) {
+	void fill(final MapElement element) {
 		Arrays.fill(map, element.getMapValue());
 	}
 
@@ -76,7 +78,7 @@ public class GeneratedMap {
 	 * @param the
 	 *            element to fill inside the rectangle
 	 */
-	public void drawRectangle(int x, int y, int width, int height, MapElement bound, MapElement fill) {
+	public void drawRectangle(int x, int y, int width, int height, final MapElement bound, final MapElement fill) {
 		log.info("Draw " + x + ", " + y + ", " + width + ", " + height);
 		// check input arguments and fit them to map area
 		if (x < 0) {
@@ -100,11 +102,39 @@ public class GeneratedMap {
 		drawRectangleChecked(x, y, width, height, bound.getMapValue(), fill.getMapValue());
 	}
 
-	void drawRectangle(Area2D area, MapElement bound, MapElement fill) {
+	/**
+	 * Draw bounded rectangle with fill on map. If coordinates or size of
+	 * element will be out of map - it'll be cut off. It is drawing method with
+	 * checking arguments.
+	 * 
+	 * @param area
+	 *            area to draw
+	 * @param bound
+	 *            bound element
+	 * @param fill
+	 *            fill element
+	 */
+	public void drawRectangle(final Area2D area, final MapElement bound, final MapElement fill) {
 		drawRectangle(area.x, area.y, area.width, area.height, bound, fill);
 	}
 
-	void drawRectangle(int x, int y, int width, int height, MapElement fill) {
+	/**
+	 * Draw the rectangle on the map.If coordinates or size of element will be
+	 * out of map - it'll be cut off. It is drawing method with checking
+	 * arguments.
+	 * 
+	 * @param x
+	 *            the rectangle's x
+	 * @param y
+	 *            the rectangle's y
+	 * @param width
+	 *            the rectangle's width
+	 * @param height
+	 *            the rectangle's height
+	 * @param fill
+	 *            the rectangle's filling element
+	 */
+	void drawRectangle(int x, int y, int width, int height, final MapElement fill) {
 		// check input arguments and fit them to map area
 		if (x < 0) {
 			width += x;
@@ -127,13 +157,41 @@ public class GeneratedMap {
 		drawRectangleChecked(x, y, width, height, fill.getMapValue());
 	}
 
-	void drawRectangle(Area2D area, MapElement fill) {
+	/**
+	 * Draw the rectangle on the map.If coordinates or size of element will be
+	 * out of map - it'll be cut off. It is drawing method with checking
+	 * arguments.
+	 * 
+	 * @param area
+	 *            the rectangle area
+	 * @param fill
+	 *            the filling element
+	 */
+	void drawRectangle(final Area2D area, final MapElement fill) {
 		drawRectangle(area.x, area.y, area.width, area.height, fill);
 	}
 
-	void drawRectangleChecked(int x, int y, int width, int height, byte bound, byte fill) {
+	/**
+	 * Draw the rectangle on the map. Arguments should be checked before a call
+	 * that are valid.
+	 * 
+	 * @param x
+	 *            the rectangle's x
+	 * @param y
+	 *            the rectangle's y
+	 * @param width
+	 *            the rectangle's width
+	 * @param height
+	 *            the rectangle's height
+	 * @param bound
+	 *            the rectangle's bounding element
+	 * @param fill
+	 *            the rectangle's filling element
+	 */
+	void drawRectangleChecked(final int x, final int y, final int width, final int height, final byte bound,
+	        final byte fill) {
 		int pos = calculatePosition(x, y);
-		int last = pos + (height - 2) * this.width + width;
+		final int last = pos + (height - 2) * this.width + width;
 		Arrays.fill(map, pos, pos + width, bound);
 		for (pos += this.width; pos < last; pos += this.width) {
 			map[pos] = bound;
@@ -147,7 +205,22 @@ public class GeneratedMap {
 		}
 	}
 
-	void drawRectangleChecked(int x, int y, int width, int height, byte fill) {
+	/**
+	 * Draw the rectangle on the map. Arguments should be checked before a call
+	 * that are valid.
+	 * 
+	 * @param x
+	 *            the rectangle's x
+	 * @param y
+	 *            the rectangle's y
+	 * @param width
+	 *            the rectangle's width
+	 * @param height
+	 *            the rectangle's height
+	 * @param fill
+	 *            the rectangle's filling element
+	 */
+	void drawRectangleChecked(final int x, final int y, final int width, final int height, final byte fill) {
 		int pos = calculatePosition(x, y);
 		for (int i = 0; i < height; i++) {
 			Arrays.fill(map, pos, pos + width, fill);
@@ -161,30 +234,63 @@ public class GeneratedMap {
 	 * something else. Prefer usage of this method with elements as byte array.
 	 * 
 	 * @param x
+	 *            the rectangle's x
 	 * @param y
+	 *            the rectangle's y
 	 * @param width
+	 *            the rectangle's width
 	 * @param height
-	 * @param element
-	 * @return
+	 *            the rectangle's height
+	 * @param elements
+	 *            the list of elements to check
+	 * @return true, if found any of elements from the list
 	 */
-	boolean isRectangleWith(int x, int y, int width, int height, MapElement... elements) {
-		byte[] checkArray = new byte[elements.length];
+	boolean isRectangleWith(final int x, final int y, final int width, final int height, final MapElement... elements) {
+		final byte[] checkArray = new byte[elements.length];
 		for (int i = 0; i < elements.length; i++) {
 			checkArray[i] = elements[i].getMapValue();
 		}
 		return isRectangleWith(x, y, width, height, checkArray);
 	}
 
-	boolean isRectangleWith(Area2D area, byte... mapValues) {
+	/**
+	 * Check, that insight rectangle there is an selected element from a list.
+	 * Allows to find element on area or check, that area is in collision with
+	 * something else. Prefer usage of this method with elements as byte array.
+	 * 
+	 * @param area
+	 *            the rectangle's area
+	 * @param mapValues
+	 *            the list of element values to check
+	 * @return true, if found any of element value from the list
+	 */
+	boolean isRectangleWith(final Area2D area, final byte... mapValues) {
 		return isRectangleWith(area.x, area.y, area.width, area.height, mapValues);
 	}
 
-	boolean isRectangleWith(int x, int y, int width, int height, byte... mapValues) {
+	/**
+	 * Check, that insight rectangle there is an selected element from a list.
+	 * Allows to find element on area or check, that area is in collision with
+	 * something else. Prefer usage of this method with elements as byte array.
+	 * 
+	 * @param x
+	 *            the rectangle's x
+	 * @param y
+	 *            the rectangle's y
+	 * @param width
+	 *            the rectangle's width
+	 * @param height
+	 *            the rectangle's height
+	 * @param mapValues
+	 *            the list of element values to check
+	 * @return true, if found any of element value from the list
+	 */
+	boolean isRectangleWith(final int x, final int y, final int width, final int height, final byte... mapValues) {
 		int pos = calculatePosition(x, y);
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++, pos++) {
-				byte valueFromMap = map[pos];
-				for (byte mapValue : mapValues) {
+				final byte valueFromMap = map[pos];
+				for (final byte mapValue : mapValues) {
 					if (valueFromMap == mapValue) {
 						return true;
 					}
@@ -196,7 +302,17 @@ public class GeneratedMap {
 		return false;
 	}
 
-	private int calculatePosition(int x, int y) {
+	/**
+	 * Calculate position on the map array element based on coordinates of the
+	 * point.
+	 * 
+	 * @param x
+	 *            the point's x
+	 * @param y
+	 *            the point's y
+	 * @return position on the map array
+	 */
+	private int calculatePosition(final int x, final int y) {
 		return y * this.width + x;
 	}
 
@@ -209,7 +325,7 @@ public class GeneratedMap {
 	 *            the y coordinate
 	 * @return value at selected coordinates
 	 */
-	public byte getValueByPosition(int x, int y) {
+	public byte getValueByPosition(final int x, final int y) {
 		return map[calculatePosition(x, y)];
 	}
 
@@ -220,24 +336,59 @@ public class GeneratedMap {
 	 *            position of value
 	 * @return value at selected position
 	 */
-	public byte getValue(int i) {
+	public byte getValue(final int i) {
 		return map[i];
 	}
 
-	public void setValue(int pos, byte v) {
+	/**
+	 * Set the value on selected position in the map array.
+	 * 
+	 * @param pos
+	 *            the position
+	 * @param v
+	 *            the value
+	 */
+	public void setValue(final int pos, final byte v) {
 		map[pos] = v;
 	}
 
-	public void setValue(int x, int y, byte v) {
+	/**
+	 * Set the value on the point selected by coordinates.
+	 * 
+	 * @param x
+	 *            the point's x
+	 * @param y
+	 *            the point's y
+	 * @param v
+	 *            the value
+	 */
+	public void setValue(final int x, final int y, final byte v) {
 		setValue(calculatePosition(x, y), v);
 	}
 
-	public void setValue(Point2D p, byte v) {
+	/**
+	 * Set the value on the selected point .
+	 * 
+	 * @param p
+	 *            the point
+	 * @param v
+	 *            the value
+	 */
+	public void setValue(final Point2D p, final byte v) {
 		setValue(calculatePosition(p.x, p.y), v);
 	}
 
-	public char[][] convertToCharMap(char[] valueMapping) {
-		char[][] result = new char[width][height];
+	/**
+	 * Convert current map to char map. Map value are converted to characters on
+	 * base of valueMapping parameter. Position in valueMapping array is a value
+	 * of converted element.
+	 * 
+	 * @param valueMapping
+	 *            conversion map
+	 * @return converted character map
+	 */
+	public char[][] convertToCharMap(final char[] valueMapping) {
+		final char[][] result = new char[width][height];
 		for (int i = 0; i < map.length; i++) {
 			result[i % width][i / width] = valueMapping[map[i]];
 		}
@@ -245,28 +396,39 @@ public class GeneratedMap {
 	}
 
 	/**
-	 * Append elements from drilling map to current map. Elements are move only
-	 * to not generated elements of current map. Size of map has to be same.
+	 * Drilling a path on current path. It means, that all elements, which
+	 * contains a path are moved to the map, but only if it's not generated
+	 * element on the map. If on map is a wall it'll be changed to a door
+	 * element.
 	 * 
-	 * @param drillMap
-	 *            drilling map
+	 * @param drillPathMap
+	 *            drilling map of a path
 	 */
-	public void drillMap(GeneratedMap drillMap) {
-		if (drillMap == null) {
+	public void drillPath(final GeneratedMap drillPathMap) {
+		if (drillPathMap == null) {
 			return;
 		}
-		if (drillMap.width != width || drillMap.height != height) {
+		if (drillPathMap.width != width || drillPathMap.height != height) {
 			throw new IllegalArgumentException("Wrong size of map");
 		}
 
-		int size = width * height;
+		final int size = width * height;
 		for (int i = 0; i < size; i++) {
-			if (map[i] == MapElement.NOT_GENERATED.getMapValue()
-			        && drillMap.map[i] != MapElement.NOT_GENERATED.getMapValue()) {
-				map[i] = drillMap.map[i];
+			if (drillPathMap.map[i] == MapElement.PATH.getMapValue()) {
+				final byte mapElement = map[i];
+				if (mapElement == MapElement.NOT_GENERATED.getMapValue()) {
+					map[i] = MapElement.PATH.getMapValue();
+				} else if (mapElement == MapElement.WALL.getMapValue()) {
+					map[i] = MapElement.DOOR.getMapValue();
+				}
 			}
-
 		}
 	}
 
+	@Override
+	public GeneratedMap clone() {
+		final GeneratedMap result = new GeneratedMap(this.width, this.height);
+		System.arraycopy(this.map, 0, result.map, 0, this.width * this.height);
+		return result;
+	}
 }
