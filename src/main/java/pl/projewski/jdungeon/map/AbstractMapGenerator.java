@@ -9,7 +9,7 @@ import java.util.Random;
  * @author Piotr Rojewski <rojek_abc@o2.pl>
  *
  */
-abstract class AbstractMapGenerator implements IMapGenerator {
+public abstract class AbstractMapGenerator implements IMapGenerator {
 
 	/** Properties of a map generator. */
 	private final Properties props = new Properties();

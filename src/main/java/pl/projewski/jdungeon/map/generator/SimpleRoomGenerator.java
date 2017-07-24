@@ -1,12 +1,17 @@
-package pl.projewski.jdungeon.map;
+package pl.projewski.jdungeon.map.generator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
+import pl.projewski.jdungeon.map.AbstractMapGenerator;
+import pl.projewski.jdungeon.map.GeneratedMap;
+import pl.projewski.jdungeon.map.MapElement;
+import pl.projewski.jdungeon.map.SimpleRoomGeneratorProperty;
 import pl.projewski.jdungeon.map.direct.Area2D;
 import pl.projewski.jdungeon.map.direct.Vector2D;
+import pl.projewski.jdungeon.path.ShortestLinePathFinder;
 
 /**
  * This is created by me simple room generator.
@@ -62,27 +67,10 @@ public class SimpleRoomGenerator extends AbstractMapGenerator {
 			return map;
 		}
 
-		// calculate connections network between rooms
-		final DistanceList<Area2D> distanceList = new DistanceList<>();
-		for (int i = 0; i < roomList.size(); i++) {
-			for (int j = i + 1; j < roomList.size(); j++) {
-				distanceList.appendDistance(roomList.get(i), roomList.get(j));
-			}
-		}
-
-		// check shortest connections between rooms and try build a path between
-		// them
-		for (final Area2D room : roomList) {
-			final List<Distance<Area2D>> roomDistanceList = distanceList.getDistanceList(room);
-			if (roomDistanceList.isEmpty()) {
-				continue;
-			}
-			for (final Distance<Area2D> roomDistance : roomDistanceList) {
-
-			}
-		}
-
-		// generate paths between rooms
+		final ShortestLinePathFinder pathFinder = new ShortestLinePathFinder();
+		final GeneratedMap path = pathFinder.findPaths(map, roomList, MapElement.ROOM.getMapValue(),
+		        MapElement.WALL.getMapValue());
+		map.drillPath(path);
 
 		return map;
 	}

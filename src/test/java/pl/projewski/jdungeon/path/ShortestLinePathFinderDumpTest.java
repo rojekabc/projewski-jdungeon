@@ -93,10 +93,42 @@ public class ShortestLinePathFinderDumpTest {
 	}
 
 	@Test
-	public void testPathFindArea() {
+	public void testPathFindArea_normal() {
 		final GeneratedMap map = new GeneratedMap(18, 12);
 		final Area2D one = new Area2D(1, 1, 3, 3);
 		final Area2D two = new Area2D(8, 8, 3, 3);
+		map.drawRectangle(one, MapElement.WALL, MapElement.ROOM);
+		map.drawRectangle(two, MapElement.WALL, MapElement.ROOM);
+		final ShortestLinePathFinder path = new ShortestLinePathFinder();
+		final GeneratedMap findPath = path.findPath(map, one, two, MapElement.WALL.getMapValue(),
+		        MapElement.ROOM.getMapValue());
+		Assert.assertNotNull(findPath);
+		map.drillPath(findPath);
+		DumpHelper.dumpMap(findPath, "Path");
+		DumpHelper.dumpMap(map, "Map");
+	}
+
+	@Test
+	public void testPathFindArea_neighbour() {
+		final GeneratedMap map = new GeneratedMap(18, 12);
+		final Area2D one = new Area2D(1, 1, 3, 3);
+		final Area2D two = new Area2D(4, 1, 3, 3);
+		map.drawRectangle(one, MapElement.WALL, MapElement.ROOM);
+		map.drawRectangle(two, MapElement.WALL, MapElement.ROOM);
+		final ShortestLinePathFinder path = new ShortestLinePathFinder();
+		final GeneratedMap findPath = path.findPath(map, one, two, MapElement.WALL.getMapValue(),
+		        MapElement.ROOM.getMapValue());
+		Assert.assertNotNull(findPath);
+		map.drillPath(findPath);
+		DumpHelper.dumpMap(findPath, "Path");
+		DumpHelper.dumpMap(map, "Map");
+	}
+
+	@Test
+	public void testPathFindArea_sameWall() {
+		final GeneratedMap map = new GeneratedMap(18, 12);
+		final Area2D one = new Area2D(1, 1, 3, 3);
+		final Area2D two = new Area2D(3, 1, 3, 3);
 		map.drawRectangle(one, MapElement.WALL, MapElement.ROOM);
 		map.drawRectangle(two, MapElement.WALL, MapElement.ROOM);
 		final ShortestLinePathFinder path = new ShortestLinePathFinder();

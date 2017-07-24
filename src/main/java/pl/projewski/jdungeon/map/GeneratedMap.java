@@ -264,7 +264,7 @@ public class GeneratedMap implements Cloneable {
 	 *            the list of element values to check
 	 * @return true, if found any of element value from the list
 	 */
-	boolean isRectangleWith(final Area2D area, final byte... mapValues) {
+	public boolean isRectangleWith(final Area2D area, final byte... mapValues) {
 		return isRectangleWith(area.x, area.y, area.width, area.height, mapValues);
 	}
 
