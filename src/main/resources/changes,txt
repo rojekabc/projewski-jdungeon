@@ -1,0 +1,11 @@
+=== 0.0.1 ===
+	[DONE] Rain drop algorithm of the room generation algorithm.
+	[DONE] The shortest path finder algorithm between two rooms or many rooms.
+	[DONE] Simple - basic room generation algorithm.
+	[DONE] Basic structures and operations.
+=== Backlog ===
+	[TODO] Dungeon generators.
+	[TODO] World map generators.
+	[TODO] Village map generators.
+	[TODO] Mob/Player view algorithm.
+	[TODO] Append additional elements in dungeon - river / grass etc. - algorithm.

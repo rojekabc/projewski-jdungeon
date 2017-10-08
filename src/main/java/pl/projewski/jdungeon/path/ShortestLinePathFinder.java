@@ -40,7 +40,7 @@ public class ShortestLinePathFinder implements IPathFinder {
 			return null;
 		}
 
-		final GeneratedMap result = new GeneratedMap(map.getWidth(), map.getHeight());
+		final GeneratedMap result = new GeneratedMap(map.width, map.height);
 
 		final Area2D startArea = areaList.get(0);
 		final List<Area2D> startAreaList = new ArrayList<>();
@@ -67,9 +67,9 @@ public class ShortestLinePathFinder implements IPathFinder {
 		if (targetAreaList.isEmpty()) {
 			return null;
 		}
-		final GeneratedMap result = new GeneratedMap(map.getWidth(), map.getHeight());
-		final int width = map.getWidth();
-		final int height = map.getHeight();
+		final GeneratedMap result = new GeneratedMap(map.width, map.height);
+		final int width = map.width;
+		final int height = map.height;
 		final int size = width * height;
 		final short[] find = new short[size];
 		// not-set value
@@ -115,9 +115,9 @@ public class ShortestLinePathFinder implements IPathFinder {
 	@Override
 	public GeneratedMap findPath(final GeneratedMap map, final Area2D start, final Area2D end,
 	        final byte... excludeElements) {
-		final GeneratedMap result = new GeneratedMap(map.getWidth(), map.getHeight());
-		final int width = map.getWidth();
-		final int height = map.getHeight();
+		final GeneratedMap result = new GeneratedMap(map.width, map.height);
+		final int width = map.width;
+		final int height = map.height;
 		final int size = width * height;
 
 		final short[] find = new short[size];
@@ -188,13 +188,13 @@ public class ShortestLinePathFinder implements IPathFinder {
 	@Override
 	public GeneratedMap findPath(final GeneratedMap map, final Point2D start, final Point2D end,
 	        final byte... excludeElements) {
-		final GeneratedMap result = new GeneratedMap(map.getWidth(), map.getHeight());
+		final GeneratedMap result = new GeneratedMap(map.width, map.height);
 		if (start.equals(end)) {
 			result.setValue(start, MapElement.PATH.getMapValue());
 			return result;
 		}
-		final int width = map.getWidth();
-		final int height = map.getHeight();
+		final int width = map.width;
+		final int height = map.height;
 		final int size = width * height;
 		final int endpos = end.x + end.y * width;
 		final short[] find = new short[size];
@@ -232,9 +232,7 @@ public class ShortestLinePathFinder implements IPathFinder {
 				for (pathPoint.x = 0; pathPoint.x < width; pathPoint.x++, i++) {
 					if (find[i] == set) {
 						foundset = true;
-						final List<Vector2D> checkList = Arrays.asList(new Vector2D(1, 0), new Vector2D(-1, 0),
-						        new Vector2D(0, 1), new Vector2D(0, -1));
-						for (final Vector2D vector : checkList) {
+						for (final Vector2D vector : Vector2D.baseDirections) {
 							pathPoint.move(vector);
 							if (pathPoint.isInsideArea(0, 0, width, height)) {
 								if (flood(find, size, set, pathPoint, map, excludeElements)) {
@@ -265,8 +263,6 @@ public class ShortestLinePathFinder implements IPathFinder {
 		short set = find[pathPoint.x + pathPoint.y * width];
 		// going back and mark a path on a map
 		final Area2D mapArea = new Area2D(0, 0, width, height);
-		final List<Vector2D> checkList = Arrays.asList(new Vector2D(1, 0), new Vector2D(-1, 0), new Vector2D(0, 1),
-		        new Vector2D(0, -1));
 		Vector2D lastCheck = null;
 		result.setValue(pathPoint.x, pathPoint.y, MapElement.PATH.getMapValue());
 		while (set > 0) {
@@ -285,7 +281,7 @@ public class ShortestLinePathFinder implements IPathFinder {
 				}
 			}
 			// check with vectors
-			for (final Vector2D check : checkList) {
+			for (final Vector2D check : Vector2D.baseDirections) {
 				if (check == lastCheck) {
 					// it was verified as a direction-wage
 					continue;
@@ -327,7 +323,7 @@ public class ShortestLinePathFinder implements IPathFinder {
 	 */
 	private boolean flood(final short[] find, final int size, final short set, final Point2D p, final GeneratedMap map,
 	        final byte... excludeElements) {
-		final int pos = p.x + p.y * map.getWidth();
+		final int pos = p.x + p.y * map.width;
 		// is it end
 		if (find[pos] == Short.MIN_VALUE) {
 			find[pos] = (short) (set + 1);

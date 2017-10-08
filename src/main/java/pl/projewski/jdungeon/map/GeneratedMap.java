@@ -2,7 +2,6 @@ package pl.projewski.jdungeon.map;
 
 import java.util.Arrays;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import pl.projewski.jdungeon.map.direct.Area2D;
 import pl.projewski.jdungeon.map.direct.Point2D;
@@ -14,17 +13,11 @@ import pl.projewski.jdungeon.map.direct.Point2D;
  *
  */
 @Slf4j
-public class GeneratedMap implements Cloneable {
+public class GeneratedMap extends Area2D implements Cloneable {
 	/**
 	 * Container of map data.
 	 */
 	byte[] map;
-	/** The width of the mp. */
-	@Getter
-	private final int width;
-	/** The height of the map. */
-	@Getter
-	private final int height;
 
 	/**
 	 * Create map data for specified size and fill it by
@@ -38,6 +31,7 @@ public class GeneratedMap implements Cloneable {
 	 *                if width or height are less or euals zero
 	 */
 	public GeneratedMap(final int width, final int height) {
+		super(0, 0, width, height);
 		if (width <= 0) {
 			throw new IllegalArgumentException("width");
 		}

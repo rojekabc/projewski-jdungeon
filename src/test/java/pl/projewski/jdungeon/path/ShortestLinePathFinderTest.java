@@ -122,10 +122,10 @@ public class ShortestLinePathFinderTest {
 
 	// check, that path don't go through not allowed elements
 	private void checkCorrectDrill(final GeneratedMap map, final GeneratedMap path, final byte... excludes) {
-		final int width = map.getWidth();
-		final int height = map.getHeight();
-		Assert.assertEquals(width, path.getWidth());
-		Assert.assertEquals(height, path.getHeight());
+		final int width = map.width;
+		final int height = map.height;
+		Assert.assertEquals(width, path.width);
+		Assert.assertEquals(height, path.height);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				final byte pathValue = path.getValueByPosition(x, y);
@@ -143,9 +143,7 @@ public class ShortestLinePathFinderTest {
 	private void checkPath(final GeneratedMap map, final Point2D start, final Point2D end) {
 		final GeneratedMap clone = map.clone();
 		final Point2D pos = start.clone();
-		final Vector2D[] vectors = new Vector2D[] { new Vector2D(-1, 0), new Vector2D(1, 0), new Vector2D(0, -1),
-		        new Vector2D(0, 1) };
-		final Area2D mapArea = new Area2D(0, 0, map.getWidth(), map.getHeight());
+		final Area2D mapArea = new Area2D(0, 0, map.width, map.height);
 
 		// check it is a path
 		Assert.assertEquals(MapElement.PATH.getMapValue(), clone.getValueByPosition(pos.x, pos.y));
@@ -154,7 +152,7 @@ public class ShortestLinePathFinderTest {
 			clone.setValue(pos, MapElement.NOT_GENERATED.getMapValue());
 			// find next point of path
 			Vector2D moveVector = null;
-			for (final Vector2D vector : vectors) {
+			for (final Vector2D vector : Vector2D.baseDirections) {
 				pos.move(vector);
 				if (pos.isInsideArea(mapArea)
 				        && clone.getValueByPosition(pos.x, pos.y) == MapElement.PATH.getMapValue()) {

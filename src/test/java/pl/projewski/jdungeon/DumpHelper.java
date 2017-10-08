@@ -17,8 +17,8 @@ public class DumpHelper {
 		valueMapping[MapElement.DOOR.getMapValue()] = '+';
 
 		final char[][] charMap = map.convertToCharMap(valueMapping);
-		final int height = map.getHeight();
-		final int width = map.getWidth();
+		final int height = map.height;
+		final int width = map.width;
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {
 				System.out.print(charMap[i][j]);
@@ -33,8 +33,8 @@ public class DumpHelper {
 	}
 
 	public static void dumpMapValues(final GeneratedMap map) {
-		final int width = map.getWidth();
-		for (int j = 0; j < map.getHeight(); j++) {
+		final int width = map.width;
+		for (int j = 0; j < map.height; j++) {
 			for (int i = 0; i < width; i++) {
 				final byte b = map.getValue(j * width + i);
 				if (b < 0x10) {

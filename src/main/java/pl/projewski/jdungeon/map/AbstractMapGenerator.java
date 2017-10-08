@@ -86,7 +86,7 @@ public abstract class AbstractMapGenerator implements IMapGenerator {
 	 *             IllegalArgumentException} if value of maximum is less than
 	 *             value of minimum
 	 */
-	public int nextInt(final Random random, final int min, final int max) {
+	public static int nextInt(final Random random, final int min, final int max) {
 		if (max < min) {
 			throw new IllegalArgumentException("max");
 		}

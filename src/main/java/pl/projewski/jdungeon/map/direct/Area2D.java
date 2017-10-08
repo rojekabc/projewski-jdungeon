@@ -1,8 +1,11 @@
 package pl.projewski.jdungeon.map.direct;
 
+import java.util.Random;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import pl.projewski.jdungeon.map.AbstractMapGenerator;
 
 /**
  * Direct access class for rectangle. It implements {@link Cloneable} and
@@ -64,8 +67,8 @@ public class Area2D implements Cloneable, Moveable<Area2D> {
 	 *            the rectangle area's height
 	 * @return true, if the this whole area is inside of area from parameters
 	 */
-	public boolean isInside(final int x, final int y, final int wdth, final int height) {
-		return this.x >= x && this.y >= y && this.x + this.width <= width && this.y + this.height <= height;
+	public boolean isInside(final int x, final int y, final int width, final int height) {
+		return (this.x >= x) && (this.y >= y) && (this.x + this.width <= width) && (this.y + this.height <= height);
 	}
 
 	/**
@@ -88,6 +91,19 @@ public class Area2D implements Cloneable, Moveable<Area2D> {
 		return new Point2D(this.x + this.width / 2, this.y + this.height / 2);
 	}
 
+	/**
+	 * Get random point inside area.
+	 * 
+	 * @param random
+	 *            random engine
+	 * @return random point
+	 */
+	public Point2D randomPoint(final Random random) {
+		return new Point2D( //
+		        AbstractMapGenerator.nextInt(random, this.x, this.x + this.width - 1),
+		        AbstractMapGenerator.nextInt(random, this.y, this.y + this.height - 1));
+	}
+
 	@Override
 	public Vector2D vectorTo(final Area2D area) {
 		return center().vectorTo(area.center());
@@ -96,5 +112,45 @@ public class Area2D implements Cloneable, Moveable<Area2D> {
 	@Override
 	public Area2D clone() {
 		return new Area2D(x, y, width, height);
+	}
+
+	/**
+	 * Growing resize rectangle in directions specified by a vector.
+	 * 
+	 * @param v
+	 *            the resize direction
+	 */
+	public void resize(final Vector2D v) {
+		if (v.dx < 0) {
+			this.x += v.dx;
+		} else {
+			this.width += v.dx;
+		}
+
+		if (v.dy < 0) {
+			this.y += v.dy;
+		} else {
+			this.height += v.dy;
+		}
+	}
+
+	/**
+	 * Resize back rectangle from direction specified by a vector.
+	 * 
+	 * @param v
+	 *            the resize direction
+	 */
+	public void resizeBack(final Vector2D v) {
+		if (v.dx < 0) {
+			this.x -= v.dx;
+		} else {
+			this.width -= v.dx;
+		}
+
+		if (v.dy < 0) {
+			this.y -= v.dy;
+		} else {
+			this.height -= v.dy;
+		}
 	}
 }

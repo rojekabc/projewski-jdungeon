@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import pl.projewski.jdungeon.map.AbstractMapGenerator;
 import pl.projewski.jdungeon.map.GeneratedMap;
+import pl.projewski.jdungeon.map.GeneratorProperty;
 import pl.projewski.jdungeon.map.MapElement;
-import pl.projewski.jdungeon.map.SimpleRoomGeneratorProperty;
 import pl.projewski.jdungeon.map.direct.Area2D;
 import pl.projewski.jdungeon.map.direct.Vector2D;
 import pl.projewski.jdungeon.path.ShortestLinePathFinder;
@@ -21,14 +22,6 @@ import pl.projewski.jdungeon.path.ShortestLinePathFinder;
  */
 @Slf4j
 public class SimpleRoomGenerator extends AbstractMapGenerator {
-
-	// Set of possible move directions to find a place for generated room, which
-	// is in conflict with another room
-	private final static Vector2D[] moveDirections = new Vector2D[] { //
-	        new Vector2D(-1, -1), new Vector2D(-1, 0), new Vector2D(-1, 1), //
-	        new Vector2D(0, -1), new Vector2D(0, 1), //
-	        new Vector2D(1, -1), new Vector2D(1, 0), new Vector2D(1, 1), //
-	};
 
 	/**
 	 * Constructor. Sets default properties of generator.
@@ -95,8 +88,8 @@ public class SimpleRoomGenerator extends AbstractMapGenerator {
 		int x = 0;
 		int y = 0;
 		while (nTries > 0) {
-			x = random.nextInt(map.getWidth());
-			y = random.nextInt(map.getHeight());
+			x = random.nextInt(map.width);
+			y = random.nextInt(map.height);
 			if (map.getValueByPosition(x, y) == MapElement.NOT_GENERATED.getMapValue()) {
 				log.info("Find a point " + x + ", " + y);
 				break;
@@ -115,13 +108,12 @@ public class SimpleRoomGenerator extends AbstractMapGenerator {
 		        getAsInt(SimpleRoomGeneratorProperty.MAP_MAXIMUM_HEIGHT));
 		Area2D area = new Area2D(x, y, w, h);
 		log.info("Size: " + w + ", " + h);
-		if (x + w > map.getWidth() || y + h > map.getHeight()
-		        || map.isRectangleWith(area, MapElement.ROOM.getMapValue())) {
+		if (x + w > map.width || y + h > map.height || map.isRectangleWith(area, MapElement.ROOM.getMapValue())) {
 			// don't fit
 			log.info("Not fit");
 			// check possibilities
 			final List<Vector2D> possibleVectors = new ArrayList<Vector2D>();
-			for (final Vector2D moveVector : moveDirections) {
+			for (final Vector2D moveVector : Vector2D.allDirections) {
 				final Vector2D calcVector = checkMove(map, area, moveVector);
 				if (calcVector != null) {
 					possibleVectors.add(calcVector);
@@ -152,18 +144,18 @@ public class SimpleRoomGenerator extends AbstractMapGenerator {
 	 * @return vector of move for room to place on not used place on the map
 	 */
 	private Vector2D checkMove(final GeneratedMap map, final Area2D area, final Vector2D vector) {
-		if (area.x + area.width > map.getWidth() && vector.dx >= 0) {
+		if (area.x + area.width > map.width && vector.dx >= 0) {
 			return null;
 		}
-		if (area.y + area.height > map.getHeight() && vector.dy >= 0) {
+		if (area.y + area.height > map.height && vector.dy >= 0) {
 			return null;
 		}
 		final Area2D clone = area.clone();
 		final Vector2D result = new Vector2D(0, 0);
-		while (clone.x >= 0 && clone.y >= 0 && clone.x < map.getWidth() && clone.y < map.getHeight()) {
+		while (clone.x >= 0 && clone.y >= 0 && clone.x < map.width && clone.y < map.height) {
 			clone.move(vector);
 			result.add(vector);
-			if (clone.isInside(0, 0, map.getWidth(), map.getHeight())
+			if (clone.isInside(0, 0, map.width, map.height)
 			        && !map.isRectangleWith(clone, MapElement.ROOM.getMapValue())) {
 				return result;
 			}
@@ -171,4 +163,26 @@ public class SimpleRoomGenerator extends AbstractMapGenerator {
 		return null;
 	}
 
+	public enum SimpleRoomGeneratorProperty implements GeneratorProperty {
+
+		/** The minimum width of generated room. */
+		MAP_MINIMUM_WIDTH("map.width.min"),
+		/** The minimum height of generated room. */
+		MAP_MINIMUM_HEIGHT("map.height.min"),
+		/** The maximum width of generated room. */
+		MAP_MAXIMUM_WIDTH("map.width.max"),
+		/** The maximum height of generated room. */
+		MAP_MAXIMUM_HEIGHT("map.height.max"),
+		/** Target of room ammount to be genrated (if it's possible). */
+		MAP_ROOM_AMOUNT("map.room.amount");
+
+		@Getter
+		private final String propertyName;
+
+		/** Create instance with property name. */
+		SimpleRoomGeneratorProperty(final String name) {
+			this.propertyName = name;
+		}
+
+	}
 }
