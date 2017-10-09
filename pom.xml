@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pl.projewski.jdungeon</groupId>
 	<artifactId>projewski-jdungeon</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Java Dungeon Library</name>
 	<description>This is the module library for operations on dungeons in roguelike meaning.</description>
 
@@ -25,5 +25,18 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.21</version>
 		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 </project>
