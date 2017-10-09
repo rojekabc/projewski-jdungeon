@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pl.projewski.jdungeon</groupId>
 	<artifactId>projewski-jdungeon</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Java Dungeon Library</name>
 	<description>This is the module library for operations on dungeons in roguelike meaning.</description>
 
