@@ -7,6 +7,7 @@ My goal of create such library is write a better tested, more documented and uni
 **Features**
 1. Dungeon generation algorithms
 - my own implementation of the simple room generator
+- my own implementation of the raind-drop room generator
 
 2. Path finder algorithms
 - my own implementation of the shortes line path finder
